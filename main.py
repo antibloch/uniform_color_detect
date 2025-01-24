@@ -172,7 +172,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--percent_frames", type=float, default=0.1, help="percentage of frames to extract")
 
-    parser.add_argument("--fps", type=int, default=1, help="fps of output video")
+    parser.add_argument("--fps", type=int, default=10, help="fps of output video")
     args = parser.parse_args()
 
     main(args.video_pth, args.output_pth, args.percent_frames, human_detector, cloth_processor, cloth_segmenter, args.fps, device)
