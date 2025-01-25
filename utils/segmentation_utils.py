@@ -17,12 +17,24 @@ warnings.filterwarnings("ignore", category=UserWarning, module="torchvision.tran
 
 
 # ref: https://pyimagesearch.com/2021/02/22/opencv-connected-component-labeling-and-analysis/
-def post_process(greyscale_masked, shirt_unit_function):
-    # if the greyscale_masked has some minority irrelavant color values
+def post_process(greyscale_masked, shirt_unit_function, thr_level='hard'):
+    # if the greyscale_masked has some minority irrelavant color values, then removing them with otsu thresholding
+    # otsu's algorithm is simple, fast way that can find the threshold that maximizes inter-class variance between majority and minority pixel value regions
+
+    if thr_level == 'hard':
+        p=0.53
+        _,greyscale_otsu = cv2.threshold(greyscale_masked,int(p*255),255,cv2.THRESH_BINARY_INV)
+    elif thr_level == 'soft':
+        p=0.4
+        _,greyscale_otsu = cv2.threshold(greyscale_masked,int(p*255),255,cv2.THRESH_BINARY_INV)
+    
+    elif thr_level == 'adaptive':
+        greyscale_otsu = cv2.adaptiveThreshold(greyscale_masked, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
+
+    else:
+        raise ValueError('Invalid thresholding level')
 
 
-    p=0.53
-    _,greyscale_otsu = cv2.threshold(greyscale_masked,int(p*255),255,cv2.THRESH_BINARY_INV)
     greyscale_otsu=greyscale_otsu.astype(np.uint8)
     greyscale_otsu = 255-greyscale_otsu
 

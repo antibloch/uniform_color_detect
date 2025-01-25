@@ -10,7 +10,6 @@ import cv2
 import os
 import numpy as np
 import argparse
-from tqdm import tqdm
 from PIL import Image, ImageDraw, ImageFont
 from person_detection.detector import *
 from shirt_segmentation.segmentor import *
@@ -47,12 +46,14 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
 
     current_frame = 0
     extracted_count = 0
-    # intended for beautiful terminal progress
+    # intended for beautiful print terminal progress
     with Progress(
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
             BarColumn(),
         ) as progress:
             task = progress.add_task("", total=K)
+
+
             while cap.isOpened():
                 ret, frame = cap.read()
                 if not ret:
@@ -62,18 +63,27 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
 
                 if current_frame in indices_set:
                     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    frame_ref = np.copy(frame)
                     coord_list=detect(frame, human_detector)
-                    original_image = Image.fromarray(frame)
+                    original_image = Image.fromarray(frame_ref)
                     draw = ImageDraw.Draw(original_image) 
                     for coord in coord_list:
                         x1, y1, x2, y2 = coord
-                        
+                        original_image = Image.fromarray(frame_ref) 
+                        draw = ImageDraw.Draw(original_image)
                         cropped_img = original_image.crop((x1, y1, x2, y2))
                         try:
-                            color_name, color_val = segmentor(cropped_img, cloth_processor, cloth_segmenter, True, device)
+                            color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='hard', device=device)
+
+                            if ratio < 0.1:
+                                color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='soft', device=device)
+
+                                if ratio < 0.1:
+                                    color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='adaptive', device=device)
                         except:
                             try:
-                                color_name, color_val = segmentor(cropped_img, cloth_processor, cloth_segmenter, False, device)
+                                color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=False , thr_level='hard', device=device)
+
                             except:
                                 color_name, color_val = "unknown", (255, 255, 255)
 
@@ -105,8 +115,10 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
 
 
 if __name__ == "__main__":
+    #ref: https://docs.ultralytics.com/models/yolo11/#performance-metrics
+    human_detector = YOLO("yolo11s.pt")  # using this pretrainedyolov11 model as it is the best balance of speed and mAP
+    
 
-    human_detector = YOLO("yolo11s.pt")  # using this model as it is best balance of speed and mAP
     cloth_processor = SegformerImageProcessor.from_pretrained("mattmdjaga/segformer_b2_clothes")
     cloth_segmenter = AutoModelForSemanticSegmentation.from_pretrained("mattmdjaga/segformer_b2_clothes")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

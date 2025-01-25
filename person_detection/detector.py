@@ -16,7 +16,7 @@ def detect(img, detector_model):
             # Get box coordinates and crop image
             x1, y1, x2, y2 = box.xyxy[0]  # Get coordinates in (x1, y1, x2, y2) format
             x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)  # Convert to integers
-            coords.append((x1, y1, x2, y2))
+            coords.append((x1, y1, x2, y2))  # append to list of coordinates (of bounding boxes associated to people)
             
     return coords
 
