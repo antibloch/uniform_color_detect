@@ -54,7 +54,7 @@ def segmentor(img, processor, model, do_postprocess, thr_level, device):
         # standard procedure: post processing
         shirt_mask = post_process(greyscale_masked, shirt_unit_function, thr_level)
     else:
-        # Resort to no post processing because it would mean that greyscale_masked has already very few or no non-zero values
+        # Resort to no post processing because it would mean that greyscale_masked has already positive values
         shirt_mask = greyscale_masked
 
     # find percentage of >0 pixels in shirt_mask
