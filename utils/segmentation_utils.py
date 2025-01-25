@@ -28,9 +28,6 @@ def post_process(greyscale_masked, shirt_unit_function, thr_level='hard'):
         p=0.75
         _,greyscale_otsu = cv2.threshold(greyscale_masked,int(p*255),255,cv2.THRESH_BINARY_INV)
     
-    elif thr_level == 'adaptive':
-        greyscale_otsu = cv2.adaptiveThreshold(greyscale_masked, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
-
     else:
         raise ValueError('Invalid thresholding level')
 

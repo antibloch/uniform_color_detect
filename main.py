@@ -88,24 +88,18 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                             color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='hard', device=device)
 
                             if ratio < 0.1:
-                                # PLAN -B : Do soft thresholding on otsu in post processing, and it fails in ratio criteria
-                                # do adaptive threshold in otsu
+                                # PLAN -B : Do soft thresholding on otsu in post processing
                                 color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='soft', device=device)
 
-                                if ratio < 0.1:
-                                    color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='adaptive', device=device)
                         except:
                             # there are three possibilities of exception
                             # 1. the final mask of otsu (hard thresholded) has no positive values
                             # 2. the segmentation mask by segmentation model has few positive values, so post processing will be remove these values
                             # 3. the segmentation mask by segmentation model has no positive values (segmentation failed at that point)
                             try:
-                                # PLAN -B : Do soft thresholding on otsu in post processing, and it fails in ratio criteria
-                                # do adaptive threshold in otsu
+                                # PLAN -B : Do soft thresholding on otsu in post processing
                                 color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='soft', device=device)
                                 
-                                if ratio < 0.1:
-                                    color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='adaptive', device=device)
                             except:
                                 # there are two possibilities of exception
                                 # 1. the segmentation mask by segmentation model has few positive values, so post processing will be remove these values
@@ -117,7 +111,9 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                                     # there is only one possibility of exception
                                     # 1. the segmentation mask by segmentation model has no positive values (segmentation failed at that point)
 
-                                    # PLAN-C : Search from buffer for similar colors in previous frames
+                                    # PLAN-C : Search from buffer for similar colors in previous frames, otherwise set 'as unknown'
+
+                                    # setting first worst possible scenario
                                     color_name, color_val = "unknown", (255, 255, 255)
 
                                     # If color is unknown, check buffer for similar coordinates
@@ -129,7 +125,7 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                                         )
 
                                         # Calculate threshold of accepting or rejecting the buffer based color
-                                        current_threshold = 0.75*min(
+                                        current_threshold = 0.75 * min(
                                             [abs(x2 - x1), abs(y2 - y1)]
                                             )
                                         
