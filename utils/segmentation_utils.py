@@ -47,6 +47,8 @@ def post_process(greyscale_masked, shirt_unit_function, thr_level='hard'):
 
 # ref: https://www.geeksforgeeks.org/interquartile-range-to-detect-outliers-in-data/
 def get_color(img_array, mask):
+    # statistically extract color within refined mask of image array
+
     pixels = img_array[mask > 0]
     
     # Calculate quartiles for each channel
@@ -69,6 +71,8 @@ def get_color(img_array, mask):
 
 # ref: https://stackoverflow.com/questions/59546962/converting-hex-value-to-name-of-the-colour-in-python
 def get_closest_color_name(r, g, b):
+
+    # get color name for given R, G and B values
 
     colors_dict = {
     "0048BA":"Absolute Zero","B0BF1A":"Acid green","7CB9E8":"Aero","C9FFE5":"Aer o blue","B284BE":"African violet","72A0C1":"Air superiority blue","EDEAE0":"Alabaster","F0F8FF":"Alice blue","C46210":"Alloy orange","EFDECD":"Almond","E52B50":"Amaranth","9F2B68":"Amaranth (M&P)","F19CBB":"Amaranth pink","AB274F":"Amaranth purple","D3212D":"Amaranth red","3B7A57":"Amazon","FFBF00":"Amber","FF7E00":"Amber (SAE/ECE)","9966CC":"Amethyst","A4C639":"Android green","CD9575":"Antique brass","665D1E":"Antique bronze","915C83":"Antique fuchsia","841B2D":"Antique ruby","FAEBD7":"Antique white","008000":"Ao (English)",

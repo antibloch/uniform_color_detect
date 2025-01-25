@@ -17,6 +17,9 @@ from utils.main_utils import *
 
 
 def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor, cloth_segmenter, fps, device):
+    # function to read video frames, find colors, annotate them on the video, and save it as 'output.mp4'
+    
+    
     # Create output directory if it doesn't exist
     if not os.path.exists(output_pth):
         os.makedirs(output_pth)
@@ -74,6 +77,8 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                 frame_color_names=[]
 
                 if current_frame in indices_set:
+
+                    # Convert the frame to RGB and start the color identificatio and annotation process
                     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                     frame_ref = np.copy(frame)
                     coord_list=detect(frame, human_detector)

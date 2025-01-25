@@ -1,4 +1,8 @@
 # Setup
+
+## Platform
+Tested with Ubuntu 22. For other OS (other than linux), manually setting up conda environment would be required, than the following .sh file process.
+
 ## Anaconda Environment Setup
 ```code
 chmod +x env.sh
@@ -27,7 +31,9 @@ For person detection in each video frame, I use YOLO version 11 from ultralytics
 A pretrained shirt segmentation model from hugging face via transformers library on each cropped image to find pixels associated with shirt (ref: https://huggingface.co/mattmdjaga/segformer_b2_clothes) as a semantic segmentation.
 
 ### Post Processing (to get color of shirt of hockey player)
-Since shirt area can comprise of designs which act as noise to finding statisticaly dominant color, the pixel area is further processed by apply Otsu binarization which works fast and simple on seperating interclass pixel areas. After getting suitable refined segmentation area, here the statistically dominant color value is determined by finding median within interquartile range of each channel, which is the color of the shirt.
+Since shirt area can comprise of designs which act as noise to finding statisticaly dominant color, the pixel area is further processed by apply Otsu binarization which works fast and simple on seperating interclass pixel areas by maximizing inter-class variance between majority and minority pixel value regions.
+
+After getting suitable refined segmentation area, here the statistically dominant color value is determined by finding median within interquartile range of each channel, which is the color of the shirt.
 
 This scheme is best visually shown in following figure.
 
