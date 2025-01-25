@@ -128,7 +128,7 @@ While concern 4 would necessitate a tracking model, leading to increased inferen
 <div style="background-color: #f0f0f080; padding: 20px; border-radius: 5px; border: 1px solid #ddd;">
 
 
-## Phase 1: Mask Processing
+#### Phase 1: Mask Processing
 * **Input**:
     * greyscale_masked: Initial masked image
     * shirt_unit_function: Binary <span style="color: blue">shirt</span> segmentation mask
@@ -150,7 +150,7 @@ While concern 4 would necessitate a tracking model, leading to increased inferen
     * **FOR** pixels where shirt_mask > 0:
         * Invert these pixels in thresholded image
 
-## Phase 2: Color Extraction (For more detail and references, refer to code)
+#### Phase 2: Color Extraction (For more detail and references, refer to code)
 * **Input**:
     * img_array: Original RGB image
     * mask: Processed binary mask
