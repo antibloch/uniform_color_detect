@@ -152,7 +152,7 @@ if __name__ == "__main__":
     parser.add_argument("--video_pth", type=str, default="input_video.mp4", help="path to video file")
     parser.add_argument("--output_pth", type=str, default="output_images", help="path to output directory")
 
-    parser.add_argument("--percent_frames", type=float, default=0.1, help="percentage of frames to extract")
+    parser.add_argument("--percent_frames", type=float, default=1.0, help="percentage of frames to extract")
 
     parser.add_argument("--fps", type=int, default=10, help="fps of output video")
     args = parser.parse_args()
