@@ -1,7 +1,7 @@
 # Synopsis
 For a given video of hockey player (other sport players), create bounding boxes of color same as that of uniform shirt player, with name of the color shown on top cornor of bounding box.
 
-[Output Comparison](https://www.youtube.com/watch?v=b1zmmhKCPGk)
+[![Video Comparison](https://img.youtube.com/vi/b1zmmhKCPGk/0.jpg)](https://www.youtube.com/watch?v=b1zmmhKCPGk)
 # Setup
 
 ## Platform
