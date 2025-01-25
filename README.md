@@ -1,3 +1,5 @@
+
+## Anaconda Environment Setup
 ```code
 
 chmod +x env.sh
@@ -8,7 +10,7 @@ chmod +x env.sh
 
 
 
-
+# Running Code
 ```code
 
 chmod +x run.sh
