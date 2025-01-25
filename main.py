@@ -65,13 +65,12 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                     frame_ref = np.copy(frame)
                     coord_list=detect(frame, human_detector)
-                    original_image = Image.fromarray(frame_ref)
+                    original_image = Image.fromarray(frame)
+                    reference_image = Image.fromarray(frame_ref)
                     draw = ImageDraw.Draw(original_image) 
                     for coord in coord_list:
                         x1, y1, x2, y2 = coord
-                        original_image = Image.fromarray(frame_ref) 
-                        draw = ImageDraw.Draw(original_image)
-                        cropped_img = original_image.crop((x1, y1, x2, y2))
+                        cropped_img = reference_image.crop((x1, y1, x2, y2))
                         try:
                             # PLAN -A : Do hard thresholding on otsu in post processing
                             color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='hard', device=device)

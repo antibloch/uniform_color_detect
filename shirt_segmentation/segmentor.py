@@ -60,7 +60,7 @@ def segmentor(img, processor, model, do_postprocess, thr_level, device):
     # find percentage of >0 pixels in shirt_mask
     num_non_zero = np.sum(shirt_mask > 0)
     num_non_zero_ref = np.sum(shirt_unit_function > 0)
-    non_zero_ratio = num_non_zero / num_non_zero_ref
+    non_zero_ratio = num_non_zero / (num_non_zero_ref + 1e-8)    # avoid division by zero
 
     rgb_result=get_color(img_array,shirt_mask)
     mean_r, mean_g, mean_b = rgb_result[0], rgb_result[1], rgb_result[2]
