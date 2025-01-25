@@ -77,6 +77,7 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                             except:
                                 color_name, color_val = "unknown", (255, 255, 255)
 
+                        # set specifically for linux (for windows and mac, this will not work and would require different font type)
                         font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 30)
                         draw.rectangle([x1, y1, x2, y2], outline=color_val, width=6)
                         draw.text((x1, y1-20), color_name, fill=color_val, font=font)
@@ -91,7 +92,6 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                 
 
             cap.release()
-
 
 
     print("Saving video as output.mp4...")
