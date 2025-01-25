@@ -77,7 +77,7 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                             color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='hard', device=device)
 
                             if ratio < 0.1:
-                                # PLAN -B : Do soft thresholding on otsu in post processing, and it fails in ration criteria
+                                # PLAN -B : Do soft thresholding on otsu in post processing, and it fails in ratio criteria
                                 # do adaptive threshold in otsu
                                 color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='soft', device=device)
 
@@ -89,7 +89,7 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                             # 2. the segmentation mask by segmentation model has few positive values, so post processing will be remove these values
                             # 3. the segmentation mask by segmentation model has no positive values (segmentation failed at that point)
                             try:
-                                # PLAN -B : Do soft thresholding on otsu in post processing, and it fails in ration criteria
+                                # PLAN -B : Do soft thresholding on otsu in post processing, and it fails in ratio criteria
                                 # do adaptive threshold in otsu
                                 color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='soft', device=device)
                                 
