@@ -15,5 +15,5 @@ chmod +x env.sh
 
 chmod +x run.sh
 
-./run.sh <path to vid file> <sampling ratio, e.g 1.0>
+./run.sh <path to vid file>
 ```
