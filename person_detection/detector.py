@@ -11,7 +11,7 @@ def detect(img, detector_model):
 
     coords=[]
     for box in boxes:
-        # Check if detection is a person (class 0 in YOLO)
+        # Check if detection is a person (class 0 in YOLOv11)
         if box.cls == 0:
             # Get box coordinates and crop image
             x1, y1, x2, y2 = box.xyxy[0]  # Get coordinates in (x1, y1, x2, y2) format

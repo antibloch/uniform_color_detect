@@ -14,6 +14,9 @@ warnings.filterwarnings("ignore", category=UserWarning, module="torchvision.data
 warnings.filterwarnings("ignore", category=UserWarning, module="torchvision.transforms.v2")
 from shirt_segmentation.segmentation_utils import *
 
+
+
+
 # ref: https://huggingface.co/mattmdjaga/segformer_b2_clothes
 def segmentor(img, processor, model, invert, device):
     
@@ -38,6 +41,8 @@ def segmentor(img, processor, model, invert, device):
     pred_seg = upsampled_logits.argmax(dim=1)[0]
     shirt_unit_function = (pred_seg == 4).cpu().numpy() # 4 is for upper-clothes
 
+
+    # convert PIL image to numpy array for post processing
     img_array = np.array(img)
 
     # Convert to greyscale
@@ -46,20 +51,10 @@ def segmentor(img, processor, model, invert, device):
     greyscale_masked = shirt_unit_function * greyscale
 
     if invert:
-        # standard procedure: if the greyscale_masked has some minority irrelavant color values
-        p=0.53
-        _,greyscale_otsu = cv2.threshold(greyscale_masked,int(p*255),255,cv2.THRESH_BINARY_INV)
-        greyscale_otsu=greyscale_otsu.astype(np.uint8)
-        greyscale_otsu = 255-greyscale_otsu
-
-
-        initial_mask = shirt_unit_function > 0
-        greyscale_otsu[initial_mask] = 255 - greyscale_otsu[initial_mask]
-
-
-        shirt_mask = greyscale_otsu
+        # standard procedure: post processing
+        shirt_mask = post_process(greyscale_masked, shirt_unit_function)
     else:
-        # I resort to this because it would mean that greyscale_masked has already very few non-zero values
+        # Resort to no post processing because it would mean that greyscale_masked has already very few or no non-zero values
         shirt_mask = greyscale_masked
 
     rgb_result=get_color(img_array,shirt_mask)

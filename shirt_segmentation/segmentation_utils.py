@@ -16,6 +16,26 @@ warnings.filterwarnings("ignore", category=UserWarning, module="torchvision.tran
 
 
 
+# ref: https://pyimagesearch.com/2021/02/22/opencv-connected-component-labeling-and-analysis/
+def post_process(greyscale_masked, shirt_unit_function):
+    # if the greyscale_masked has some minority irrelavant color values
+
+
+    p=0.53
+    _,greyscale_otsu = cv2.threshold(greyscale_masked,int(p*255),255,cv2.THRESH_BINARY_INV)
+    greyscale_otsu=greyscale_otsu.astype(np.uint8)
+    greyscale_otsu = 255-greyscale_otsu
+
+
+    initial_mask = shirt_unit_function > 0
+    greyscale_otsu[initial_mask] = 255 - greyscale_otsu[initial_mask]
+
+
+    return greyscale_otsu
+
+
+
+
 # ref: https://www.geeksforgeeks.org/interquartile-range-to-detect-outliers-in-data/
 def get_color(img_array, mask):
     pixels = img_array[mask > 0]
