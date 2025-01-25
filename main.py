@@ -128,7 +128,8 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                                             (y1 + y2) / 2
                                         )
 
-                                        current_threshold = min(
+                                        # Calculate threshold of accepting or rejecting the buffer based color
+                                        current_threshold = 0.75*min(
                                             [abs(x2 - x1), abs(y2 - y1)]
                                             )
                                         
