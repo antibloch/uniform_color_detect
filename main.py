@@ -220,10 +220,12 @@ if __name__ == "__main__":
     human_detector = YOLO("yolo11s.pt")  # using this pretrained yolov11 model as it is the best balance of speed and mAP
     
 
-    cloth_processor = SegformerImageProcessor.from_pretrained("mattmdjaga/segformer_b2_clothes")
-    cloth_segmenter = AutoModelForSemanticSegmentation.from_pretrained("mattmdjaga/segformer_b2_clothes")
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    cloth_processor = SegformerImageProcessor.from_pretrained("mattmdjaga/segformer_b2_clothes") # ref: ref: https://huggingface.co/mattmdjaga/segformer_b2_clothes
+    cloth_segmenter = AutoModelForSemanticSegmentation.from_pretrained("mattmdjaga/segformer_b2_clothes") # ref: ref: https://huggingface.co/mattmdjaga/segformer_b2_clothes
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu") # setting device for processing (either gpu or cpu)
 
+
+    # putting associated deep learning models on device
     human_detector = human_detector.to(device)
     cloth_segmenter = cloth_segmenter.to(device)
 
