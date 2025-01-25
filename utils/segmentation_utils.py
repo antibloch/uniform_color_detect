@@ -25,7 +25,7 @@ def post_process(greyscale_masked, shirt_unit_function, thr_level='hard'):
         p=0.53
         _,greyscale_otsu = cv2.threshold(greyscale_masked,int(p*255),255,cv2.THRESH_BINARY_INV)
     elif thr_level == 'soft':
-        p=0.4
+        p=0.8
         _,greyscale_otsu = cv2.threshold(greyscale_masked,int(p*255),255,cv2.THRESH_BINARY_INV)
     
     elif thr_level == 'adaptive':
