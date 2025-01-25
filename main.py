@@ -46,6 +46,13 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
 
     current_frame = 0
     extracted_count = 0
+
+
+    buffer_coords=[]
+    buffer_color_vals=[]
+    buffer_color_names=[]
+
+
     # intended for beautiful print terminal progress
     with Progress(
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
@@ -60,6 +67,11 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                     break
 
                 progress.update(task, advance=1)
+
+
+                frame_coords=[]
+                frame_color_vals=[]
+                frame_color_names=[]
 
                 if current_frame in indices_set:
                     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -105,13 +117,84 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                                     # there is only one possibility of exception
                                     # 1. the segmentation mask by segmentation model has no positive values (segmentation failed at that point)
 
-                                    # PLAN-C : Occam's razor to just return unknown
+                                    # PLAN-C : Search from buffer for similar colors in previous frames
                                     color_name, color_val = "unknown", (255, 255, 255)
+
+                                    # If color is unknown, check buffer for similar coordinates
+                                    if len(buffer_coords) > 0:
+                                        # Calculate center of current detection
+                                        current_center = (
+                                            (x1 + x2) / 2,
+                                            (y1 + y2) / 2
+                                        )
+
+                                        current_threshold = min(
+                                            [abs(x2 - x1), abs(y2 - y1)]
+                                            )
+                                        
+                                        min_distance = float('inf')
+                                        best_color_name = "unknown"
+                                        best_color_val = (255, 255, 255)
+                                        
+                                        # Check each frame in buffer (from recent to old)
+                                        for frame_idx in range(len(buffer_coords) - 1, -1, -1):
+                                            buff_coords = buffer_coords[frame_idx]
+                                            buff_names = buffer_color_names[frame_idx]
+                                            buff_vals = buffer_color_vals[frame_idx]
+                                            
+                                            # Check each detection in the frame
+                                            for i, (bx1, by1, bx2, by2) in enumerate(buff_coords):
+                                                if buff_names[i] != "unknown":
+                                                    # Calculate center of buffer detection
+                                                    buff_center = (
+                                                        (bx1 + bx2) / 2,
+                                                        (by1 + by2) / 2
+                                                    )
+                                                    
+                                                    # Calculate Euclidean distance
+                                                    distance = np.sqrt(
+                                                        (current_center[0] - buff_center[0]) ** 2 +
+                                                        (current_center[1] - buff_center[1]) ** 2
+                                                    )
+                                                    
+                                                    # Update if this is the closest match so far
+                                                    if distance < min_distance:
+                                                        min_distance = distance
+                                                        best_color_name = buff_names[i]
+                                                        best_color_val = buff_vals[i]
+                                        
+                                        # If found a close match within current threshold, use it
+                                        if min_distance <= current_threshold:
+                                            color_name = best_color_name
+                                            color_val = best_color_val
+
+
+
+
+
+                        # update frame records
+                        frame_coords.append((x1, y1, x2, y2))
+                        frame_color_vals.append(color_val)
+                        frame_color_names.append(color_name)
+
+
 
                         # set specifically for linux (for windows and mac, this will not work and would require different font type)
                         font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 30)
                         draw.rectangle([x1, y1, x2, y2], outline=color_val, width=6)
                         draw.text((x1, y1-20), color_name, fill=color_val, font=font)
+
+
+                    # buffer update
+                    buffer_coords.append(frame_coords)
+                    buffer_color_vals.append(frame_color_vals)
+                    buffer_color_names.append(frame_color_names)
+
+                    # buffer size restriction
+                    if len(buffer_coords) > 5:
+                        buffer_coords.pop(0)
+                        buffer_color_vals.pop(0)
+                        buffer_color_names.pop(0)
 
                     # Save frame as image
                     img_name = f"img_{extracted_count}.png"
