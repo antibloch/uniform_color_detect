@@ -73,24 +73,40 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                         draw = ImageDraw.Draw(original_image)
                         cropped_img = original_image.crop((x1, y1, x2, y2))
                         try:
+                            # PLAN -A : Do hard thresholding on otsu in post processing
                             color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='hard', device=device)
 
                             if ratio < 0.1:
+                                # PLAN -B : Do soft thresholding on otsu in post processing, and it fails in ration criteria
+                                # do adaptive threshold in otsu
                                 color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='soft', device=device)
 
                                 if ratio < 0.1:
                                     color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='adaptive', device=device)
                         except:
+                            # there are three possibilities of exception
+                            # 1. the final mask of otsu (hard thresholded) has no positive values
+                            # 2. the segmentation mask by segmentation model has few positive values, so post processing will be remove these values
+                            # 3. the segmentation mask by segmentation model has no positive values (segmentation failed at that point)
                             try:
+                                # PLAN -B : Do soft thresholding on otsu in post processing, and it fails in ration criteria
+                                # do adaptive threshold in otsu
                                 color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='soft', device=device)
                                 
                                 if ratio < 0.1:
                                     color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='adaptive', device=device)
                             except:
+                                # there are two possibilities of exception
+                                # 1. the segmentation mask by segmentation model has few positive values, so post processing will be remove these values
+                                # 2. the segmentation mask by segmentation model has no positive values (segmentation failed at that point)
                                 try:
                                     color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=False , thr_level='hard', device=device)
 
                                 except:
+                                    # there is only one possibility of exception
+                                    # 1. the segmentation mask by segmentation model has no positive values (segmentation failed at that point)
+
+                                    # PLAN-C : Occam's razor to just return unknown
                                     color_name, color_val = "unknown", (255, 255, 255)
 
                         # set specifically for linux (for windows and mac, this will not work and would require different font type)
