@@ -82,10 +82,16 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
                                     color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='adaptive', device=device)
                         except:
                             try:
-                                color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=False , thr_level='hard', device=device)
-
+                                color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='soft', device=device)
+                                
+                                if ratio < 0.1:
+                                    color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=True, thr_level='adaptive', device=device)
                             except:
-                                color_name, color_val = "unknown", (255, 255, 255)
+                                try:
+                                    color_name, color_val, ratio = segmentor(cropped_img, cloth_processor, cloth_segmenter, do_postprocess=False , thr_level='hard', device=device)
+
+                                except:
+                                    color_name, color_val = "unknown", (255, 255, 255)
 
                         # set specifically for linux (for windows and mac, this will not work and would require different font type)
                         font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 30)
