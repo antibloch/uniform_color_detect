@@ -138,7 +138,7 @@ def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor,
 
 if __name__ == "__main__":
     #ref: https://docs.ultralytics.com/models/yolo11/#performance-metrics
-    human_detector = YOLO("yolo11s.pt")  # using this pretrainedyolov11 model as it is the best balance of speed and mAP
+    human_detector = YOLO("yolo11s.pt")  # using this pretrained yolov11 model as it is the best balance of speed and mAP
     
 
     cloth_processor = SegformerImageProcessor.from_pretrained("mattmdjaga/segformer_b2_clothes")
