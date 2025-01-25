@@ -14,7 +14,7 @@ from tqdm import tqdm
 from PIL import Image, ImageDraw, ImageFont
 from person_detection.detector import *
 from shirt_segmentation.segmentor import *
-from utils import *
+from utils.main_utils import *
 
 
 def main(video_pth, output_pth, percent_frames, human_detector, cloth_processor, cloth_segmenter, fps, device):

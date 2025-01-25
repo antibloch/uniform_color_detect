@@ -12,7 +12,7 @@ from skimage import color
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="torchvision.datapoints")
 warnings.filterwarnings("ignore", category=UserWarning, module="torchvision.transforms.v2")
-from shirt_segmentation.segmentation_utils import *
+from utils.segmentation_utils import *
 
 
 
