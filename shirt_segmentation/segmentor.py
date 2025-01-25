@@ -18,7 +18,7 @@ from utils.segmentation_utils import *
 
 
 # ref: https://huggingface.co/mattmdjaga/segformer_b2_clothes
-def segmentor(img, processor, model, invert, device):
+def segmentor(img, processor, model, post_process, device):
     
     # Process image with SegFormer
     inputs = processor(images=img, return_tensors="pt")
@@ -50,7 +50,7 @@ def segmentor(img, processor, model, invert, device):
 
     greyscale_masked = shirt_unit_function * greyscale
 
-    if invert:
+    if post_process:
         # standard procedure: post processing
         shirt_mask = post_process(greyscale_masked, shirt_unit_function)
     else:
