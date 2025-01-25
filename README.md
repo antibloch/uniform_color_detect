@@ -31,7 +31,7 @@ chmod +x run.sh
 For person detection in each video frame, I use YOLO version 11 from ultralytics, with pretrained weights from COCO dataset (ref: https://docs.ultralytics.com/models/yolo11/#performance-metrics),and the best size of model is chosen, which has correct balance between speeed and performance (in terms of mAP score). After detection of person as a bounding box, I crop the area of image within this bounding pixel for next step.
 
 ### Shirt Pixel Area Segmentation
-A pretrained shirt segmentation model from hugging face via transformers library on each cropped image to find pixels associated with shirt (ref: https://huggingface.co/mattmdjaga/segformer_b2_clothes) as a semantic segmentation.
+A pretrained SegFormer from hugging face is utilized, via transformers library, to semantically segment on each cropped image to find pixels associated with shirt (ref: https://huggingface.co/mattmdjaga/segformer_b2_clothes).
 
 ### Post Processing (to get color of shirt of hockey player)
 Since shirt area can comprise of designs which act as noise to finding statisticaly dominant color, the pixel area is further processed by apply Otsu binarization which works fast and simple on seperating interclass pixel areas by maximizing inter-class variance between majority and minority pixel value regions.
